@@ -84,9 +84,7 @@ class Log4Scan:
     def repeat(self):
         logger.info('start to repeat {}'.format(self.target))
         while True:
-            print(self.queue.qsize())
             if not self.queue.empty():
-                
                 package = self.queue.get()
                 print(package)
                 url = package['url'].replace('https', 'http')
@@ -114,7 +112,6 @@ class Log4Scan:
                     print(e)
                 finally:
                     dnslog_result = self.args.dnslog.pull_logs()
-                    logger.info(self.args.dnslog)
                     print(dnslog_result)
                     if dnslog_result:
                         logger.info(f'{self.target} is vulnerable.')
@@ -133,7 +130,6 @@ class Log4Scan:
             else:
                 new_data += '{key}={value}'.format(key=data[:data.index('=')], value=self.args.payload)
             new_data = new_data.strip('&')
-            print(new_data)
             return new_data
         except Exception as e:
             logger.error(e)
@@ -143,14 +139,11 @@ class Log4Scan:
     # apt-get install -y procps
     def kill_process(self):
         if os.path.exists('/proc/1/cgroup') and 'docker' in os.popen('cat /proc/1/cgroup').read():
-            print('kill_process')
             cmd = "ps aux | grep 'chromium' | grep -v grep | awk '{{print $2}}'"
-            while True:
-                process = os.popen(cmd).read()  
-                if process:
-                    os.popen('nohup kill -9 {} 2>&1 &'.format(process.replace('\n', ' ')))
-                else:
-                    break
+            process = os.popen(cmd).read()  
+            if process:
+                os.popen('nohup kill -9 {} 2>&1 &'.format(process.replace('\n', ' ')))
+
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
