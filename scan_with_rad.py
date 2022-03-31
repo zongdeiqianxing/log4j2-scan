@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # coding: utf-8
 
+# Spring-Boot-Log4j-CVE-2021-44228-Docker-Lab-main 靶机
+
 import requests
 import os
 import json
